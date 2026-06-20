@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Giammi</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css" />
+<style>
+  /* ---- tema chiaro (default) ---- */
+  :root{
+    --bg:#f4f3ef; --panel:#ffffff; --panel2:#eceae3; --line:#e2dfd6;
+    --text:#19191a; --muted:#6c6a64; --hint:#9b978e;
+    --accent:#1d9e75; --accent-ink:#ffffff; --info:#2f6fb0; --star:#e0a32a;
+    --shadow:0 6px 24px rgba(0,0,0,.08); --radius:16px;
+  }
+  /* ---- tema scuro (segue il sistema) ---- */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e0f11; --panel:#17191c; --panel2:#1e2125; --line:#2a2e33;
+      --text:#f1f0ed; --muted:#a6a29a; --hint:#75716b;
+      --accent:#22b083; --accent-ink:#04130d; --info:#85b7eb; --star:#f2d06b;
+      --shadow:0 8px 30px rgba(0,0,0,.45);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{transition:background-color .3s ease,color .3s ease}
+  button{font-family:inherit;color:inherit;cursor:pointer;transition:transform .08s ease,background-color .2s,border-color .2s,opacity .2s}
+  button:active{transform:scale(.97)}
+  img{user-select:none;-webkit-user-drag:none}
+
+  .app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:78px}
+  .content{flex:1;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* header */
+  .top{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 18px 6px}
+  .hello{font-size:21px;font-weight:600}
+  .sub{font-size:12px;color:var(--muted);margin-top:2px;text-transform:capitalize}
+  .chip{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--muted)}
+  .dot{width:7px;height:7px;border-radius:50%;background:#8a8a8a}.dot.ok{background:var(--accent)}.dot.off{background:#d8743a}
+
+  .sectit{font-size:18px;font-weight:600;padding:14px 18px 8px}
+  .muted{color:var(--muted)} .hint{color:var(--hint)}
+
+  /* hero */
+  .hero{position:relative;margin:6px 16px;border-radius:var(--radius);overflow:hidden;background:var(--panel);border:1px solid var(--line);min-height:340px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+  .hero img{width:100%;height:auto;max-height:64vh;object-fit:contain;display:block;animation:fade .4s ease}
+  .badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.5);color:#fff;border-radius:9px;padding:5px 9px;font-size:11px;backdrop-filter:blur(6px)}
+  .compare{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:9px;padding:6px 9px;font-size:12px;display:flex;gap:6px;align-items:center}
+  .ov{position:absolute;inset:0;background:rgba(8,9,10,.66);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center;padding:24px}
+  .ov img{width:86px;height:86px;border-radius:12px;object-fit:cover;animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+  .bar{width:170px;height:4px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
+  .bar i{display:block;height:100%;width:40%;background:var(--accent);border-radius:3px;animation:slide 1.3s ease-in-out infinite}
+  @keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+  .t1{font-size:15px;font-weight:500}.t2{font-size:12px;opacity:.8}
+
+  /* palette */
+  .palette{display:flex;gap:7px;align-items:center;padding:4px 18px 2px;flex-wrap:wrap}
+  .palette .lab{font-size:11px;color:var(--hint)}
+  .sw{width:18px;height:18px;border-radius:50%;border:1px solid rgba(128,128,128,.25)}
+  .advice{font-size:12px;color:var(--muted);padding:4px 18px 8px;line-height:1.55}
+
+  /* controlli */
+  .row{display:flex;gap:10px;align-items:center;padding:8px 16px}
+  .seg{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:3px;flex:1}
+  .seg button{flex:1;border:none;background:transparent;color:var(--muted);font-size:12.5px;padding:8px 4px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .seg button.on{background:var(--panel);color:var(--text);font-weight:500;box-shadow:var(--shadow)}
+  .iconbtn{border:1px solid var(--line);background:var(--panel);border-radius:12px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text)}
+
+  /* card look del giorno */
+  .today{display:flex;align-items:center;gap:12px;margin:6px 16px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .today img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+  .today .ti1{font-size:14px;font-weight:500}.today .ti2{font-size:11.5px;color:var(--muted)}
+  .pill{background:var(--accent);color:var(--accent-ink);border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:500}
+
+  /* filtri */
+  .filters{display:flex;gap:8px;overflow-x:auto;padding:6px 16px 8px}
+  .filters::-webkit-scrollbar{display:none}
+  .fchip{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:20px;padding:7px 14px;font-size:12.5px}
+  .fchip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+  /* inventario / griglia */
+  .inv{display:flex;gap:10px;overflow-x:auto;padding:4px 16px 6px}
+  .inv::-webkit-scrollbar{display:none}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:6px 16px 16px}
+  .slot{flex:0 0 auto;width:66px}
+  .card .box,.slot .box{position:relative;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);background:var(--panel2);box-shadow:var(--shadow)}
+  .slot .box{width:66px;height:66px;display:flex;align-items:center;justify-content:center}
+  .card .box{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+  .slot.on .box,.card.on .box{border-color:var(--accent);border-width:2px}
+  .box img{width:100%;height:100%;object-fit:cover}
+  .box i.ph{font-size:24px;color:var(--muted)}
+  .cdot{position:absolute;bottom:4px;right:4px;width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.4)}
+  .star{position:absolute;top:3px;left:4px;color:var(--star);font-size:13px;filter:drop-shadow(0 0 1px rgba(0,0,0,.5))}
+  .done{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:var(--accent);border:1px solid var(--panel)}
+  .cap{font-size:11px;color:var(--muted);text-align:center;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .slot.on .cap,.card.on .cap{color:var(--accent)}
+
+  /* nav */
+  nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;align-items:center;
+    background:var(--panel);border-top:1px solid var(--line);padding:8px 10px 16px;z-index:30;max-width:480px;margin:0 auto}
+  nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--hint);font-size:10px;background:none;border:none}
+  nav .it.on{color:var(--text)} nav .it i{font-size:23px}
+  nav .scan{width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;margin-top:-18px;box-shadow:var(--shadow)}
+  nav .scan i{font-size:26px}
+
+  /* onboarding */
+  .onb{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:30px 24px;max-width:480px;margin:0 auto}
+  .onb h1{font-size:25px;margin:0;font-weight:600}
+  .onb p{font-size:14px;color:var(--muted);line-height:1.6;margin:6px 0 0}
+  .drop{border:1.5px dashed var(--line);border-radius:16px;padding:30px 18px;text-align:center;background:var(--panel);display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow)}
+  .drop i{font-size:32px;color:var(--accent)} .drop .d1{font-size:15px;font-weight:500}.drop .d2{font-size:12px;color:var(--hint)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;padding:13px 16px;font-size:14px;font-weight:500;border:1px solid var(--line);background:var(--panel);color:var(--text);box-shadow:var(--shadow)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .hidden-file{display:none}
+
+  /* profilo */
+  .prow{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line)}
+  .pthumb{width:64px;height:64px;border-radius:12px;object-fit:cover;border:1px solid var(--line)}
+
+  /* camera overlay */
+  .cam{position:fixed;inset:0;background:#000;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
+  .cam-v{max-width:100%;max-height:74vh;border-radius:16px;object-fit:contain;background:#111}
+  .cam-bar{display:flex;gap:12px}
+  .cam-err{color:#f0b9a6;font-size:13px;text-align:center;padding:0 24px;max-width:420px}
+
+  /* notice */
+  .notice{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:70;background:var(--text);color:var(--bg);
+    padding:10px 16px;border-radius:12px;font-size:13px;box-shadow:var(--shadow);max-width:90%;text-align:center;animation:fade .25s ease}
+  .err{margin:8px 16px;background:#3a1c14;color:#f0b9a6;border:1px solid #5a2a1c;border-radius:10px;padding:10px 12px;font-size:12.5px}
+  @media (prefers-color-scheme: light){ .err{background:#fbeae6;color:#9a3a22;border-color:#f0c5b8} }
+
+  /* ---- desktop ---- */
+  @media (min-width:900px){
+    .app{max-width:980px;padding-bottom:0;padding-top:64px}
+    .home2{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start;padding:0 8px}
+    .hero{max-height:none}.hero img{max-height:72vh}
+    .grid{grid-template-columns:repeat(4,1fr)}
+    nav{top:0;bottom:auto;max-width:100%;justify-content:center;gap:28px;border-top:none;border-bottom:1px solid var(--line);padding:10px}
+    nav .it{flex-direction:row;gap:7px;font-size:13px}nav .it i{font-size:20px}
+    nav .scan{margin-top:0;width:42px;height:42px}nav .scan i{font-size:22px}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.23.1';
+import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.23.1/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+const html = htm.bind(h);
+
+const API = location.protocol === 'file:' ? 'http://127.0.0.1:8770' : '';
+const LS = { person:'giammi.person', uploads:'giammi.uploads', analysis:'giammi.analysis', mode:'giammi.mode' };
+const SEASONS = ['Inverno','Inverno','Primavera','Primavera','Primavera','Estate','Estate','Estate','Autunno','Autunno','Autunno','Inverno'];
+const FALLBACK_PALETTE = ['#1d9e75','#d85a30','#e9dcc4','#27496b','#7a8a3a'];
+const FILTERS = [['all','Tutti'],['upper','Maglie'],['lower','Pantaloni'],['overall','Abiti']];
+const CATLABEL = {upper:'Maglia',lower:'Pantaloni',overall:'Abito'};
+
+const todayLabel = () => new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+const weatherSeason = () => SEASONS[new Date().getMonth()];
+
+function downscale(file, max=1024){
+  return new Promise((res,rej)=>{ const fr=new FileReader();
+    fr.onload=()=>{ const img=new Image(); img.onload=()=>{ const s=Math.min(1,max/Math.max(img.width,img.height));
+      const w=Math.round(img.width*s),hh=Math.round(img.height*s); const c=document.createElement('canvas'); c.width=w;c.height=hh;
+      c.getContext('2d').drawImage(img,0,0,w,hh); res(c.toDataURL('image/jpeg',0.92)); };
+      img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); });
+}
+function blobToDataURL(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b);});}
+function dominantColor(src){return new Promise((res)=>{ const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas');c.width=48;c.height=48;
+  const x=c.getContext('2d'); x.drawImage(img,0,0,48,48); const d=x.getImageData(0,0,48,48).data; const px=[];
+  for(let i=0;i<d.length;i+=4){ const r=d[i],g=d[i+1],b=d[i+2]; if(d[i+3]>128 && !(r>235&&g>235&&b>235)) px.push([r,g,b]); }
+  if(!px.length){res(null);return;} px.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2])); const m=px[Math.floor(px.length/2)];
+  res('#'+m.map(v=>v.toString(16).padStart(2,'0')).join('')); }; img.onerror=()=>res(null); img.src=src; });}
+function hexRgb(h){h=(h||'').replace('#','');return [parseInt(h.slice(0,2),16)||0,parseInt(h.slice(2,4),16)||0,parseInt(h.slice(4,6),16)||0];}
+function colorDist(a,b){const x=hexRgb(a),y=hexRgb(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2]);}
+
+function App(){
+  const [person,setPerson]=useState(()=>localStorage.getItem(LS.person)||null);
+  const [uploads,setUploads]=useState(()=>{try{return JSON.parse(localStorage.getItem(LS.uploads)||'[]')}catch(e){return[]}});
+  const [samples,setSamples]=useState([]);
+  const [analysis,setAnalysis]=useState(()=>{try{return JSON.parse(localStorage.getItem(LS.analysis)||'null')}catch(e){return null}});
+  const [view,setView]=useState('home');
+  const [filter,setFilter]=useState('all');
+  const [selected,setSelected]=useState(null);
+  const [cache,setCache]=useState({});
+  const [loading,setLoading]=useState(false);
+  const [elapsed,setElapsed]=useState(0);
+  const [busy,setBusy]=useState(null);
+  const [mode,setMode]=useState(()=>localStorage.getItem(LS.mode)||'local');
+  const [quality,setQuality]=useState('fast');
+  const [showOriginal,setShowOriginal]=useState(false);
+  const [device,setDevice]=useState('...');
+  const [notice,setNotice]=useState(null);
+  const [error,setError]=useState(null);
+  const [cameraOn,setCameraOn]=useState(false);
+  const [shot,setShot]=useState(null);
+  const [camErr,setCamErr]=useState(null);
+  const timer=useRef(null), videoRef=useRef(null), streamRef=useRef(null);
+
+  useEffect(()=>{ fetch(API+'/garments.json').then(r=>r.json()).then(setSamples).catch(()=>{}); },[]);
+  useEffect(()=>{ fetch(API+'/health').then(r=>r.ok?r.json():Promise.reject()).then(j=>setDevice(j.device)).catch(()=>setDevice('offline')); },[]);
+  useEffect(()=>{ localStorage.setItem(LS.uploads,JSON.stringify(uploads)); },[uploads]);
+  useEffect(()=>{ if(analysis) localStorage.setItem(LS.analysis,JSON.stringify(analysis)); },[analysis]);
+  useEffect(()=>{ localStorage.setItem(LS.mode,mode); },[mode]);
+  useEffect(()=>{ if(person && !analysis) runAnalysis(person); },[]);
+  useEffect(()=>{ if(!cameraOn){ if(streamRef.current){streamRef.current.getTracks().forEach(t=>t.stop());streamRef.current=null;} return; }
+    setCamErr(null);
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720}},audio:false})
+      .then(s=>{ streamRef.current=s; if(videoRef.current) videoRef.current.srcObject=s; })
+      .catch(e=>setCamErr('Webcam non disponibile ('+e.name+'). Da iPhone via http la fotocamera web è bloccata: usa "Carica foto" o l\'app iOS.'));
+  },[cameraOn]);
+
+  function flash(msg){ setNotice(msg); setTimeout(()=>setNotice(null),4500); }
+  const garments=[...samples,...uploads];
+  const visible = filter==='all' ? garments : garments.filter(g=>(g.category||'upper')===filter);
+  const _doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/86400000);
+  const todayPick=samples.length?samples[_doy%samples.length]:null;
+  const palette=(analysis&&analysis.palette_main)||FALLBACK_PALETTE;
+  const matchScore=(hex)=> (analysis&&analysis.palette&&hex)?Math.min(...analysis.palette.map(p=>colorDist(hex,p))):999;
+  const currentRender=selected&&cache[selected];
+  const heroSrc=(!showOriginal&&currentRender)?currentRender:person;
+
+  async function runAnalysis(src){
+    try{ const blob=await (await fetch(src)).blob(); const fd=new FormData(); fd.append('person',blob,'me.jpg');
+      const r=await fetch(API+'/analyze',{method:'POST',body:fd}); if(r.ok){ const j=await r.json(); if(!j.error) setAnalysis(j); } }catch(e){}
+  }
+  async function setPersonFrom(src){
+    setView('home'); setSelected(null); setCache({}); setError(null);
+    setPerson(src); try{localStorage.setItem(LS.person,src);}catch(e){}
+    setBusy('Preparo la tua foto…');
+    try{ const blob=await (await fetch(src)).blob(); const fd=new FormData(); fd.append('image',blob,'me.jpg');
+      const r=await fetch(API+'/cutout',{method:'POST',body:fd});
+      if(r.ok){ const clean=await blobToDataURL(await r.blob()); setPerson(clean); try{localStorage.setItem(LS.person,clean);}catch(e){} src=clean; } }catch(e){}
+    setBusy(null); setAnalysis(null); runAnalysis(src);
+  }
+  async function pickPerson(e){ const f=e.target.files&&e.target.files[0]; if(!f)return; const d=await downscale(f,1024); setPersonFrom(d); }
+  function useSample(){ setPersonFrom(API+'/person_sample.jpg'); }
+  function clearPerson(){ localStorage.removeItem(LS.person); localStorage.removeItem(LS.analysis); setPerson(null); setAnalysis(null); setSelected(null); setCache({}); }
+
+  async function generate(g){
+    if(!person){ flash('Carica prima una tua foto'); return; }
+    setError(null); setShowOriginal(false); setView('home');
+    if(cache[g.id]){ setSelected(g.id); return; }
+    setSelected(g.id); setLoading(true); setElapsed(0);
+    timer.current=setInterval(()=>setElapsed(e=>e+1),1000);
+    try{
+      const clothSrc=g.dataURL||(API+'/'+g.file);
+      const [pb,cb]=await Promise.all([fetch(person).then(r=>r.blob()),fetch(clothSrc).then(r=>r.blob())]);
+      const fd=new FormData(); fd.append('person',pb,'person.jpg'); fd.append('cloth',cb,'cloth.jpg');
+      fd.append('category',g.category||'upper'); fd.append('quality',quality); fd.append('mode',mode);
+      const res=await fetch(API+'/tryon',{method:'POST',body:fd});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      if((res.headers.get('X-Mode')||'')==='local-fallback') flash('Cloud non disponibile (quota) — generato in locale.');
+      const url=URL.createObjectURL(await res.blob()); setCache(c=>({...c,[g.id]:url}));
+    }catch(err){ setError('Generazione non riuscita: '+err.message+'. Il backend è avviato?'); setSelected(null); }
+    finally{ setLoading(false); clearInterval(timer.current); }
+  }
+  function shuffle(){ if(!garments.length)return; generate(garments[Math.floor(Math.random()*garments.length)]); }
+
+  async function addGarment(e){
+    const f=e.target.files&&e.target.files[0]; if(!f)return;
+    const id='up_'+Date.now(); const d=await downscale(f,1024);
+    setUploads(u=>[...u,{id,label:'Nuovo capo',category:'upper',dataURL:d}]); setView('guardaroba');
+    flash('Scontorno e catalogho il capo…');
+    try{
+      const blob=await (await fetch(d)).blob();
+      const cutFd=new FormData(); cutFd.append('image',blob,'capo.jpg');
+      const clsFd=new FormData(); clsFd.append('image',blob,'capo.jpg');
+      const [cutR,clsR]=await Promise.all([ fetch(API+'/cutout',{method:'POST',body:cutFd}), fetch(API+'/classify',{method:'POST',body:clsFd}) ]);
+      let clean=d; if(cutR.ok) clean=await blobToDataURL(await cutR.blob());
+      const cat=clsR.ok?((await clsR.json()).category||'upper'):'upper';
+      const color=await dominantColor(clean);
+      setUploads(u=>u.map(x=>x.id===id?{...x,dataURL:clean,category:cat,color,label:CATLABEL[cat]||'Capo'}:x));
+      flash('Capo aggiunto al guardaroba ('+(CATLABEL[cat]||'capo')+')');
+    }catch(err){ flash('Capo aggiunto (senza scontorno)'); }
+  }
+
+  function openCamera(){ setShot(null); setCameraOn(true); }
+  function closeCamera(){ setCameraOn(false); setShot(null); }
+  function captureFrame(){ const v=videoRef.current; if(!v||!v.videoWidth)return;
+    const max=900,s=Math.min(1,max/Math.max(v.videoWidth,v.videoHeight));
+    const w=Math.round(v.videoWidth*s),hh=Math.round(v.videoHeight*s);
+    const c=document.createElement('canvas');c.width=w;c.height=hh;c.getContext('2d').drawImage(v,0,0,w,hh);
+    setShot(c.toDataURL('image/jpeg',0.92)); }
+  function useShot(){ if(!shot)return; const s=shot; closeCamera(); setPersonFrom(s); }
+
+  // ---------- render ----------
+  const cameraOverlay = cameraOn ? html`
+    <div class="cam">
+      ${!shot ? html`
+        <video ref=${videoRef} class="cam-v" autoplay playsinline muted></video>
+        ${camErr?html`<div class="cam-err">${camErr}</div>`:null}
+        <div class="cam-bar">
+          <button class="btn" onClick=${closeCamera}>Annulla</button>
+          <button class="btn primary" onClick=${captureFrame} disabled=${!!camErr}><i class="ti ti-camera"></i> Scatta</button>
+        </div>` : html`
+        <img class="cam-v" src=${shot} />
+        <div class="cam-bar">
+          <button class="btn" onClick=${()=>setShot(null)}>Riscatta</button>
+          <button class="btn primary" onClick=${useShot}>Usa questa foto</button>
+        </div>`}
+    </div>` : null;
+
+  if(!person){
+    return html`
+      ${cameraOverlay}
+      <div class="onb">
+        <div><h1>Vediamo come ti sta.</h1><p>Carica o scatta una foto a figura intera. Resta sul tuo Mac: niente esce dal dispositivo.</p></div>
+        <label class="drop"><i class="ti ti-photo-up"></i><span class="d1">Carica una foto</span><span class="d2">JPG o PNG · figura intera</span>
+          <input class="hidden-file" type="file" accept="image/*" onChange=${pickPerson} /></label>
+        <button class="btn" onClick=${openCamera}><i class="ti ti-camera"></i> Scatta con la webcam</button>
+        <button class="btn" onClick=${useSample}>Usa una foto di esempio</button>
+      </div>`;
+  }
+
+  const heroBlock = html`
+    <div class="hero">
+      ${heroSrc?html`<img src=${heroSrc} alt="tu" />`:null}
+      <div class="badge">${(!showOriginal&&currentRender)?'Look generato':'Tu'}</div>
+      ${currentRender?html`<button class="compare" onMouseDown=${()=>setShowOriginal(true)} onMouseUp=${()=>setShowOriginal(false)} onMouseLeave=${()=>setShowOriginal(false)} onTouchStart=${()=>setShowOriginal(true)} onTouchEnd=${()=>setShowOriginal(false)}><i class="ti ti-eye"></i> originale</button>`:null}
+      ${busy?html`<div class="ov"><div class="bar"><i></i></div><div class="t1">${busy}</div></div>`:null}
+      ${loading?html`<div class="ov">${selected?html`<img src=${(garments.find(x=>x.id===selected)||{}).dataURL||(API+'/'+(garments.find(x=>x.id===selected)||{}).file)} />`:null}<div class="t1">Sto creando il tuo look…</div><div class="bar"><i></i></div><div class="t2">${elapsed}s · ${mode==='cloud'?'cloud':('locale '+quality)}</div></div>`:null}
+    </div>`;
+
+  const invSlot=(g)=>html`<div class=${'slot'+(selected===g.id?' on':'')} onClick=${()=>generate(g)}>
+      <div class="box"><img src=${g.dataURL||(API+'/'+g.file)} />
+        ${g.color?html`<span class="cdot" style=${'background:'+g.color}></span>`:null}
+        ${matchScore(g.color)<95?html`<span class="star"><i class="ti ti-star"></i></span>`:null}
+        ${cache[g.id]?html`<span class="done"></span>`:null}</div>
+      <div class="cap">${g.label}</div></div>`;
+
+  const filtersBar = html`<div class="filters">${FILTERS.map(([k,l])=>html`<button class=${'fchip'+(filter===k?' on':'')} onClick=${()=>setFilter(k)}>${l}</button>`)}</div>`;
+
+  const home = html`
+    <div class="content" key="home">
+      <div class="top"><div><div class="hello">Ciao</div><div class="sub">${todayLabel()}</div></div>
+        <div class="chip"><span class=${'dot '+(device==='offline'?'off':(device==='...'?'':'ok'))}></span>${device==='offline'?'offline':weatherSeason()}</div></div>
+      <div class="home2">
+        <div>${heroBlock}</div>
+        <div>
+          <div class="palette"><span class="lab">Palette${analysis?' · '+analysis.season:''}</span>${palette.map(c=>html`<span class="sw" style=${'background:'+c}></span>`)}</div>
+          ${error?html`<div class="err">${error}</div>`:null}
+          <div class="row"><div class="seg">
+            <button class=${mode==='local'?'on':''} onClick=${()=>setMode('local')}><i class="ti ti-device-laptop"></i> Locale</button>
+            <button class=${mode==='cloud'?'on':''} onClick=${()=>setMode('cloud')}><i class="ti ti-bolt"></i> Cloud</button>
+          </div><button class="iconbtn" title="Look casuale" onClick=${shuffle}><i class="ti ti-arrows-shuffle"></i></button></div>
+          ${todayPick?html`<div class="today"><img src=${API+'/'+todayPick.file} />
+            <div style="flex:1;min-width:0"><div class="ti1">Look del giorno</div><div class="ti2">${todayPick.label}${analysis?' · '+analysis.season:''}</div></div>
+            <button class="pill" onClick=${()=>generate(todayPick)}>Indossa</button></div>`:null}
+          <div class="sectit" style="padding-bottom:4px">Inventario</div>
+          ${filtersBar}
+          <div class="inv">${visible.map(invSlot)}
+            <label class="slot"><div class="box"><i class="ti ti-plus ph"></i></div><div class="cap">Aggiungi</div><input class="hidden-file" type="file" accept="image/*" onChange=${addGarment} /></label></div>
+        </div>
+      </div>
+    </div>`;
+
+  const guardaroba = html`
+    <div class="content" key="guard">
+      <div class="sectit">Guardaroba</div>
+      ${filtersBar}
+      <div class="grid">
+        ${visible.map(g=>html`<div class=${'card'+(selected===g.id?' on':'')} onClick=${()=>generate(g)}>
+          <div class="box"><img src=${g.dataURL||(API+'/'+g.file)} />
+            ${g.color?html`<span class="cdot" style=${'background:'+g.color}></span>`:null}
+            ${matchScore(g.color)<95?html`<span class="star"><i class="ti ti-star"></i></span>`:null}
+            ${cache[g.id]?html`<span class="done"></span>`:null}</div>
+          <div class="cap">${g.label}</div></div>`)}
+        <label class="card"><div class="box"><i class="ti ti-plus ph"></i></div><div class="cap">Aggiungi</div><input class="hidden-file" type="file" accept="image/*" onChange=${addGarment} /></label>
+      </div>
+    </div>`;
+
+  const suggested=[...garments].filter(g=>g.color).sort((a,b)=>matchScore(a.color)-matchScore(b.color)).slice(0,6);
+  const idee = html`
+    <div class="content" key="idee">
+      <div class="sectit">Idee</div>
+      ${analysis?html`
+        <div class="palette" style="padding-top:0"><span class="lab">Sei una</span><b style="font-size:15px">${analysis.season}</b></div>
+        <div class="palette">${(analysis.palette||palette).map(c=>html`<span class="sw" style=${'width:30px;height:30px;background:'+c}></span>`)}</div>
+        <div class="advice">${analysis.advice}</div>
+        <div class="advice hint">Sottotono ${analysis.undertone} · profondità ${analysis.depth} · contrasto ${analysis.contrast}</div>
+        <div class="sectit" style="font-size:16px">Consigliati per te</div>
+        <div class="grid">${suggested.map(g=>html`<div class="card" onClick=${()=>generate(g)}><div class="box"><img src=${g.dataURL||(API+'/'+g.file)} />${g.color?html`<span class="cdot" style=${'background:'+g.color}></span>`:null}<span class="star"><i class="ti ti-star"></i></span></div><div class="cap">${g.label}</div></div>`)}</div>
+      `:html`<div class="advice">Carica una foto per scoprire la tua palette e i capi consigliati.</div>`}
+    </div>`;
+
+  const profilo = html`
+    <div class="content" key="prof">
+      <div class="sectit">Profilo</div>
+      <div class="prow"><img class="pthumb" src=${person} /><div style="flex:1"><div class="ti1" style="font-weight:500">La tua foto modello</div><div class="ti2 muted" style="font-size:12px">${analysis?analysis.season+' · sottotono '+analysis.undertone:'analisi in corso…'}</div></div></div>
+      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+        <label class="btn"><i class="ti ti-photo-up"></i> Cambia foto (carica)<input class="hidden-file" type="file" accept="image/*" onChange=${pickPerson} /></label>
+        <button class="btn" onClick=${openCamera}><i class="ti ti-camera"></i> Cambia foto (webcam)</button>
+        <div class="seg" style="margin-top:4px">
+          <button class=${mode==='local'?'on':''} onClick=${()=>setMode('local')}><i class="ti ti-device-laptop"></i> Locale · privato</button>
+          <button class=${mode==='cloud'?'on':''} onClick=${()=>setMode('cloud')}><i class="ti ti-bolt"></i> Cloud · veloce</button>
+        </div>
+        <div class="advice hint">Locale: gira sul tuo Mac (~90s, privato). Cloud: GPU gratuita Hugging Face (~25s, quota limitata; imposta HF_TOKEN per più quota).</div>
+        <button class="btn" onClick=${clearPerson}><i class="ti ti-trash"></i> Reimposta foto</button>
+      </div>
+    </div>`;
+
+  const NAV=[['home','Home','ti-home'],['guardaroba','Guardaroba','ti-hanger'],['__add','','ti-camera'],['idee','Idee','ti-bulb'],['profilo','Profilo','ti-user']];
+  return html`
+    ${cameraOverlay}
+    ${notice?html`<div class="notice">${notice}</div>`:null}
+    <div class="app">
+      ${view==='home'?home:view==='guardaroba'?guardaroba:view==='idee'?idee:profilo}
+      <nav>${NAV.map(([k,l,ic])=> k==='__add'
+        ? html`<label class="scan"><i class="ti ti-camera"></i><input class="hidden-file" type="file" accept="image/*" onChange=${addGarment} /></label>`
+        : html`<button class=${'it'+(view===k?' on':'')} onClick=${()=>setView(k)}><i class=${'ti '+ic}></i>${l}</button>`)}
+      </nav>
+    </div>`;
+}
+render(html`<${App} />`, document.getElementById('app'));
+</script>
+</body>
+</html>

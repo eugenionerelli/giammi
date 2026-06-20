@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+backend/.venv/
+
+# Modelli/cache pesanti e file rigenerabili (scaricabili con gli script)
+backend/.hf-cache/
+backend/outputs/
+backend/weights_paths.txt
+
+# Repo di terze parti: si clona a parte (vedi README)
+backend/CatVTON/
+
+# Launcher locale (path specifici della macchina) e config locale
+Giammi.app/
+.claude/
+
+# Script di QA/scratch
+backend/test_client.py
+backend/verify_endpoint.py
+
+# OS / segreti (per sicurezza: niente chiavi nel repo)
+.DS_Store
+.env
+*.token
+*.pem
+*.key

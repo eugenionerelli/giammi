@@ -1,0 +1,16 @@
+# Giammi backend — dipendenze principali (Apple Silicon / Python 3.11)
+torch
+torchvision
+diffusers
+transformers
+accelerate
+huggingface_hub
+safetensors
+fastapi
+uvicorn
+python-multipart
+gradio_client
+rembg
+onnxruntime
+pillow
+numpy
