@@ -11,9 +11,9 @@ backend/weights_paths.txt
 # Repo di terze parti: si clona a parte (vedi README)
 backend/CatVTON/
 
-# Launcher locale (path specifici della macchina) e config locale
-Giammi.app/
+# Config locale
 .claude/
+pubblica_su_github.command
 
 # Script di QA/scratch
 backend/test_client.py

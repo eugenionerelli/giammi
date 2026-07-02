@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0e0f11" media="(prefers-color-scheme: dark)" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Giammi</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css" />
 <style>
@@ -204,7 +210,7 @@ function App(){
 
   useEffect(()=>{ fetch(API+'/garments.json').then(r=>r.json()).then(setSamples).catch(()=>{}); },[]);
   useEffect(()=>{ fetch(API+'/health').then(r=>r.ok?r.json():Promise.reject()).then(j=>setDevice(j.device)).catch(()=>setDevice('offline')); },[]);
-  useEffect(()=>{ localStorage.setItem(LS.uploads,JSON.stringify(uploads)); },[uploads]);
+  useEffect(()=>{ try{ localStorage.setItem(LS.uploads,JSON.stringify(uploads)); }catch(e){ flash('Guardaroba pieno: spazio browser esaurito'); } },[uploads]);
   useEffect(()=>{ if(analysis) localStorage.setItem(LS.analysis,JSON.stringify(analysis)); },[analysis]);
   useEffect(()=>{ localStorage.setItem(LS.mode,mode); },[mode]);
   useEffect(()=>{ if(person && !analysis) runAnalysis(person); },[]);
@@ -246,6 +252,7 @@ function App(){
     if(!person){ flash('Carica prima una tua foto'); return; }
     setError(null); setShowOriginal(false); setView('home');
     if(cache[g.id]){ setSelected(g.id); return; }
+    if(loading){ flash('Attendi: sto già creando un look'); return; }
     setSelected(g.id); setLoading(true); setElapsed(0);
     timer.current=setInterval(()=>setElapsed(e=>e+1),1000);
     try{
